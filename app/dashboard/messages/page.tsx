@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile } from "@/context/ProfileContext";
@@ -33,7 +33,8 @@ interface ChatUser {
   unread_count: number;
 }
 
-export default function MessagesPage() {
+// Client component that uses useSearchParams
+function MessagesContent() {
   const { user } = useAuth();
   const { profile } = useProfile();
   const [chats, setChats] = useState<ChatUser[]>([]);
@@ -500,5 +501,14 @@ export default function MessagesPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+// Page component with Suspense boundary
+export default function MessagesPage() {
+  return (
+    <Suspense fallback={<LoadingScreen />}>
+      <MessagesContent />
+    </Suspense>
   );
 }
