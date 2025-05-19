@@ -1,0 +1,27 @@
+[build]
+  command = "npm run build:netlify"
+  publish = ".next"
+
+[build.environment]
+  NEXT_USE_NETLIFY_EDGE = "true"
+  NEXT_DISABLE_ESLINT = "1"
+  NODE_VERSION = "18"
+  NEXT_TELEMETRY_DISABLED = "1"
+  # Disable SSR for paths that have client-side hooks
+  NEXT_FORCE_DYNAMIC_PAGES = "/auth/login,/auth/signup"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Enable client-side navigation for auth routes
+# Redirect auth paths to client-side rendering
+[[redirects]]
+  from = "/auth/*"
+  to = "/auth/[...].html"
+  status = 200
+
+# Redirect all other paths without file extensions to index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200 
