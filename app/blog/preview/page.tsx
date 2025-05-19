@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useAuth } from "@/context/AuthContext";
@@ -25,7 +25,8 @@ interface BlogPost {
   tags: string[];
 }
 
-export default function BlogPreviewPage() {
+// Client component that uses useSearchParams
+function BlogPreviewContent() {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
@@ -89,7 +90,7 @@ export default function BlogPreviewPage() {
         <div className="max-w-4xl mx-auto">
           <h1 className="text-2xl font-bold text-red-400">Post not found</h1>
           <p className="mt-2 text-gray-400">
-            The post you're looking for doesn't exist or you don't have
+            The post you&apos;re looking for doesn't exist or you don't have
             permission to view it.
           </p>
           <Button
@@ -192,5 +193,14 @@ export default function BlogPreviewPage() {
         />
       </main>
     </div>
+  );
+}
+
+// Page component with Suspense boundary
+export default function BlogPreviewPage() {
+  return (
+    <Suspense fallback={<LoadingScreen />}>
+      <BlogPreviewContent />
+    </Suspense>
   );
 }
